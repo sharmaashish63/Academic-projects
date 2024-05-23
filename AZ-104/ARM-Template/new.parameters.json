@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "StorageName": {
+            "value": "Tec040820"
+        },
+        "Containername": {
+            "value": "Tec-DEV-Container"
+        },
+        "Sqlservername": {
+            "value": "mysqlserver1"
+        },
+        "sqladmin": {
+            "value": "admin123"
+        },
+        "Password": {
+            "value": "Test123!"
+        }
+    }
+}

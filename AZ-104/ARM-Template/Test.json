@@ -1,0 +1,34 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageName":{
+            "type": "string",
+            "minlength": 3,
+            "maxlength": 24,
+        }
+    },
+    "functions": [],
+    "variables": {
+        "uniquestoragename":"[concat(parameters('storageName'),uniqueString(resourceGroup().id))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.storage/storageAccounts",
+            "apiversion": "2021-09-01",
+            "name": "[variables('uniquestoragename')]",
+            "Location": "East US",
+            "sku": {
+                "name":"standard_LRS",
+                "tier":"Standard"
+            },
+            "kind":"storageV2",
+            "propertes":{
+                "supportsHttpsTrafficOnly":true
+            }
+
+        }
+
+    ],
+    "outputs": {}
+}
