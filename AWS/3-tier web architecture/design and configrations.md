@@ -146,4 +146,86 @@ Now upload the app-tier files to our S3 bucket **(mywebapp-ashish-101)** before 
 
   ![Transaction-check](./images/transaction.png)
 
+## Internal Load Balancing and Auto Scaling
+
+#### App Tier AMI
+Created App tier AMI from the App-server named as “App-sever image”
+#### Target Group
+Created target group for the app tier named as AppTierTargetGroup
+#### Internal load Balancer
+Created internal load balancer as “Internal-Loadbalancer”
+#### Launch Template
+Created launch template app tier named as “Apptier-Launchtemplate”
+#### Auto Scaling
+Created auto scaling group named as App-Tier-ASG
+
+## Web Tier Instance Deployment 
+
+#### Update Config File
+Before create and configure the web instances, we need to update application-code/nginx.conf file from the repo we downloaded. We need to replace [INTERNAL-LOADBALANCER-DNS] with our internal load balancer’s DNS.
+#### Web Instance Deployment
+Launched EC2 instance with Amazon Linux image names as Web-sever under our project-vpc using Web-Tier subnet
+#### Connect to Instance
+
+- Connect to Web-server using session manager.
+- Login as ec2-user
+
+#### Configure Web Instance
+Now its time to install all of the necessary components needed to run our front-end application
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+source ~/.bashrc
+nvm install 16
+nvm use 16
+```
+#### Download web tier code
+To download web tier code from our s3 bucket use the following command
+```
+aws s3 cp s3://mywebapp-ashish-101/web-tier/ web-tier –recursive
+```
+Navigate to the web-layer folder and create the build folder for the react app so we can serve our code
+```
+cd web-tier
+npm install 
+npm run build
+```
+As NGINX is utilized as the web server for the application tier. It is configured to serve the application over port 80 and to route API requests securely to the internal load balancer for backend processing.
+
+To install and configure Nginx run the following commands
+```
+Sudo yum install ngnix -y
+cd /etc/nginx
+ls
+sudo rm nginx.conf #(make sure to make a backup of ngnix.conf before delete it)#
+sudo aws s3 cp s3:// mywebapp-ashish-101/nginx.conf 
+sudo service nginx restart
+chmod -R 755 /home/ec2-user
+sudo chkconfig nginx on
+
+```
+## External Load Balancer and Auto Scaling
+External Load Balancer and Auto Scaling components
+
+#### Web Tier AMI
+Created Web Tier image named as Web-serverImange
+
+#### Target Group
+Created target group as WebTargetGroup
+![Web-Target-Group](./images/webtraget-group.png)
+
+#### Internet Facing Load Balancer
+Created internet facing Loadbalancer (“ExternalLoadBalancer”) to server our frontend web application on HTTP and HTTPS ports. So clients will hit the URL ExternalLoadbalancer-817560048.us-east-1.elb.amazonaws.com to access our frontend application and this Loadbalancer will distribute the traffic to multiple instances running application on
+![External-loadbalancer](./images/externallb.png)
+
+#### Launch Template
+Created WebTierLaunchTemplate using Web-serverImage
+![Launch Template](./images/launchtemp.png)
+
+#### Auto Scaling group 
+Created Web-Tier ASG using WebTierLaunchTemplate and defined the desired capacities as given below
+![Web-Tier-ASG](./images/asg.png)
+
+### References:-
+https://catalog.us-east-1.prod.workshops.aws/workshops/85cd2bb2-7f79-4e96-bdee-8078e469752a/en-US/part6/createami 
+Project2 - Deploy a 3 Tier Architecture On AWS - End to End Project Demo (youtube.com)
 
